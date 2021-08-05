@@ -7,49 +7,78 @@ output:
 
 
 ## Loading and preprocessing the data
-```{r echo=TRUE}
+
+```r
 activity<-read.csv("activity.csv")
 ```
 
 
 
 ## What is mean total number of steps taken per day?
-```{r echo=TRUE}
+
+```r
 #organize the records to calculate total steps each day
 daily_total_steps<-tapply(activity$steps,activity$date,sum,na.rm=TRUE)
 
 hist(daily_total_steps)
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+```r
 #mean of the total number of steps taken per day
 mean(daily_total_steps)
+```
 
+```
+## [1] 9354.23
+```
+
+```r
 #median of the total number of steps taken per day
 median(daily_total_steps)
+```
 
+```
+## [1] 10395
 ```
 
 
 ## What is the average daily activity pattern?
 
-```{r echo=TRUE}
+
+```r
 avg_steps<-aggregate(activity$steps,by=list(activity$interval),data=activity,FUN=mean,na.rm=TRUE)
 plot(avg_steps$x~avg_steps$Group.1,type = "l",xlab="5-minute interval", ylab="average number of steps taken across all days", main="Average Daily Activity Pattern")
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 #Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r echo=TRUE}
+
+```r
 avg_steps[which.max(avg_steps[,2]),1]
+```
+
+```
+## [1] 835
 ```
 
 
 ## Imputing missing values
 
 #total number of missing values in the dataset
-```{r echo=TRUE}
+
+```r
 sum(is.na.data.frame(activity))
 ```
+
+```
+## [1] 2304
+```
 #filling in all of the missing values in the dataset
-```{r echo=TRUE}
+
+```r
 new = activity
 x = nrow(new)
 y = nrow(avg_steps)
@@ -65,18 +94,32 @@ for (i in 1:x) {
 
 new_daily_total_steps<-tapply(new$steps,new$date,sum,na.rm=TRUE)
 hist(new_daily_total_steps)
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+
+```r
 #new mean of the total number of steps taken per day
 mean(new_daily_total_steps)
+```
 
+```
+## [1] 10766.19
+```
+
+```r
 #new median of the total number of steps taken per day
 median(new_daily_total_steps)
+```
 
+```
+## [1] 10766.19
 ```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r echo=TRUE}
+
+```r
 activity$date<-as.POSIXct(activity$date,format="%Y-%m-%d")
 activity$day<-weekdays(activity$date)
 
@@ -103,8 +146,11 @@ WeekendPattern$day = "weekend"
 AvgPattern<-rbind(WeekdayPattern,WeekendPattern)
 ```
 #plot
-```{r echo=TRUE}
+
+```r
 library(lattice)
 xyplot(steps ~ interval | day, data = AvgPattern, 
        type = "l", layout = c(1, 2))
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
